@@ -33,7 +33,6 @@ def searchNews(keyword):
         nDescription=nData['articles'][contArticle]['description']
         print ("News from: "+nAuthor)
         print (nTitle)
-        print (nDescription)
         contArticle+=1
     else:
         print("-------------------------------------------------------")
