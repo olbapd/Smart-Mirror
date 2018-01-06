@@ -10,15 +10,17 @@ from PIL import Image, ImageTk
 
 #SM-Imports
 import weather as wthr
+import news as nw
 
 updates=True
+news=True
 
 #Font Size
 font_type= "Copperplate Gothic Bold"
-large_text_size=14
+large_text_size=25
 xlarge_text_size=75
-small_text_size=14
-medium_text_size=18
+small_text_size=15
+medium_text_size=20
 
 #Current Date and Day Infor
 currentDate=datetime.now().strftime("%d %b %Y")
@@ -61,7 +63,6 @@ def start_Window():
         while (updates):
             temp_date=datetime.now().strftime("%d %b %Y")
             if temp_date != currentDate:
-                updateNews()
                 currentDate=temp_date
                 currentDay=datetime.now().strftime("%A")
                 dayOWLbl.config(text=str(currentDay)) #Updates Day
@@ -74,7 +75,7 @@ def start_Window():
         info=wthr.get_Data()
         if info[0]==None:
             currently_Label.config(text="")
-            forecast_Label.config(text="")
+            #forecast_Label.config(text="")
             temperature_Label.config(text="")
             location_Label.config(text="Cannot Pinpoint Location")
         else:
@@ -83,8 +84,7 @@ def start_Window():
             #forecast_Label.config(text=info[0])
             temperature_Label.config(text=info[1])
             location_Label.config(text=loc_string)
-
-            image = Image.open(weather_icon[info[0]]) #Must change this
+            image = Image.open(weather_icon[info[0]])
             image = image.resize((100, 100), Image.ANTIALIAS)
             image = image.convert('RGB')
             photo = ImageTk.PhotoImage(image)
@@ -95,11 +95,21 @@ def start_Window():
         image = image.resize((25, 25), Image.ANTIALIAS)
         image = image.convert('RGB')
         photo = ImageTk.PhotoImage(image)
-        print("here")
+        sources=["bbc-news","espn","cnn","fox-sports","marca","the-verge","crypto-coins-news","engadget","ign","abc-news","business-insider",
+             "mtv-news","national-geographic","techradar"]
+        contSource=0
+        while(news):
+            if (contSource<len(sources)):
+                header=nw.getNews(contSource,sources)
+                event_Name_Label1.config(text=header[0])
+                event_Name_Label2.config(text=header[1])
+                event_Name_Label3.config(text=header[2])
+                contSource+=1
+                time.sleep(30)
 
-        news_icon_Label1.config(image=photo)
-        news_icon_Label2.config(image=photo)
-        news_icon_Label3.config(image=photo)    
+            else:
+                contSource=0
+                time.sleep(30)
 		
     #Frames
     topFrame = Frame(mainView, background = 'black')
@@ -135,43 +145,46 @@ def start_Window():
     icon_Label.pack(side=LEFT, anchor=N, padx=20)
     currently_Label = Label(top_left_Frame, font=(font_type, medium_text_size), fg="white", bg="black")
     currently_Label.pack(side=TOP, anchor=W)
-    forecast_Label = Label(top_left_Frame, font=(font_type, small_text_size), fg="white", bg="black")
-    forecast_Label.pack(side=TOP, anchor=W)
+    #forecast_Label = Label(top_left_Frame, font=(font_type, small_text_size), fg="white", bg="black")
+    #forecast_Label.pack(side=TOP, anchor=W)
     location_Label = Label(top_left_Frame, font=(font_type, small_text_size), fg="white", bg="black")
     location_Label.pack(side=TOP, anchor=W)
 
     #News
     bottom_left_Frame=Frame(bottomFrame,bg="black")
-    bottom_left_Frame.pack(side=LEFT, anchor=S, padx=100, pady=60)
-    news_Label = Label(bottom_left_Frame, text='News', font=('Helvetica', medium_text_size), fg="white", bg="black")
-    news_Label.pack(side=TOP, anchor=W)
-    headlinesContainer = Frame(bottom_left_Frame, bg="black")
-    headlinesContainer.pack(side=TOP)
+    bottom_left_Frame.pack(side=LEFT, anchor=SW, padx=100, pady=60)
+    news_Label = Label(bottom_left_Frame, text='News', font=(font_type, medium_text_size), fg="white", bg="black")
+    news_Label.pack(side=TOP, anchor=NW)
+    headlinesContainer1 = Frame(bottom_left_Frame, bg="black")
+    headlinesContainer1.pack(anchor=W)
+    headlinesContainer2 = Frame(bottom_left_Frame, bg="black")
+    headlinesContainer2.pack(anchor=W)
+    headlinesContainer3 = Frame(bottom_left_Frame, bg="black")
+    headlinesContainer3.pack(anchor=W)
 
-    news_icon_Label1=Label(bottom_left_Frame, bg='black', image='')
-    news_icon_Label1.pack(side=LEFT, anchor=W)
-    event_Name_Label1 = Label(bottom_left_Frame, text='Real Madrid parte al Barca', font=('Helvetica', small_text_size), fg="white", bg="black")
-    event_Name_Label1.pack(side=LEFT, anchor=W)
+    news_icon_Label1=Label(headlinesContainer1, bg='black', image='')
+    news_icon_Label1.pack(side=LEFT)
+    event_Name_Label1 = Label(headlinesContainer1, text='Ashes: Khawaja passes 150 as Australia lead', font=(font_type, small_text_size), fg="white", bg="black")
+    event_Name_Label1.pack(side=LEFT)
     
-    news_icon_Label2=Label(bottom_left_Frame, bg='black', image='')
+    news_icon_Label2=Label(headlinesContainer2, bg='black', image='')
     news_icon_Label2.pack(side=LEFT, anchor=W)
-    event_Name_Label2 = Label(bottom_left_Frame, text='Messi se muere xq se quebro una unha', font=('Helvetica', small_text_size), fg="white", bg="black")
+    event_Name_Label2 = Label(headlinesContainer2, text='Ashes: Khawaja passes 150 as Australia lead', font=(font_type, small_text_size), fg="white", bg="black")
     event_Name_Label2.pack(side=LEFT, anchor=W)
     
-    news_icon_Label3=Label(bottom_left_Frame, bg='black', image='')
+    news_icon_Label3=Label(headlinesContainer3, bg='black', image='')
     news_icon_Label3.pack(side=LEFT, anchor=W)
-    event_Name_Label3 = Label(bottom_left_Frame, text='Mac quebro por fraude.', font=('Helvetica', small_text_size), fg="white", bg="black")
+    event_Name_Label3 = Label(headlinesContainer3, text='HIV-positive school aide pleads guilty to sex abuse charges', font=(font_type, small_text_size), fg="white", bg="black")
     event_Name_Label3.pack(side=LEFT, anchor=W)
 
-    updateNews()
     #Runs threads
     t_date=threading.Thread(target=updateDate)
+    t_news=threading.Thread(target=updateNews)
     t_weather=threading.Thread(target=updateWeather)
     t_date.start()
+    t_news.start()
     t_weather.start()
 
-    
     mainView.mainloop()
  	 
-
 start_Window()
