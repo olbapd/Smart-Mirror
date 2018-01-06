@@ -79,7 +79,6 @@ def start_Window():
             #forecast_Label.config(text="")
             temperature_Label.config(text="")
             location_Label.config(text="Cannot Pinpoint Location")
-            #icon_Label.config(image=None)
         else:
             loc_string=""+info[3]+", "+info[4]
             currently_Label.config(text=info[0])
@@ -90,8 +89,8 @@ def start_Window():
             image_weather = image_weather.resize((100, 100), Image.ANTIALIAS)
             image_weather = image_weather.convert('RGB')
             photo_weather = ImageTk.PhotoImage(image_weather)
-            icon_Label.config(image=photo_weather)
-            
+            weather_icon_Label.config(image=photo_weather)
+            weather_icon_Label.image=photo_weather
     def updateNews():
         image_news = Image.open("assets/Newspaper.png")
         image_news = image_news.resize((25, 25), Image.ANTIALIAS)
@@ -151,8 +150,9 @@ def start_Window():
     degree_Frame.pack(side=TOP, anchor=W)
     temperature_Label = Label(degree_Frame, font=(font_type, xlarge_text_size), fg="white", bg="black")
     temperature_Label.pack(side=LEFT, anchor=N)
-    icon_Label = Label(degree_Frame, bg="black")
-    icon_Label.pack(side=LEFT, anchor=N, padx=20)
+
+    weather_icon_Label = Label(degree_Frame, bg="black")
+    weather_icon_Label.pack(side=LEFT, anchor=N, padx=20)
     currently_Label = Label(top_left_Frame, font=(font_type, medium_text_size), fg="white", bg="black")
     currently_Label.pack(side=TOP, anchor=W)
     #forecast_Label = Label(top_left_Frame, font=(font_type, small_text_size), fg="white", bg="black")
