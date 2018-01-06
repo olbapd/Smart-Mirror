@@ -7,13 +7,21 @@ import requests
 import traceback
 import json
 from PIL import Image, ImageTk
+import speech_recognition as sr
+
 
 #SM-Imports
 import weather as wthr
 import news as nw
 
+
 updates=True
 news=True
+listening=True
+
+#Search News
+search=''
+not_waiting=True
 
 #Font Size
 font_type= "Copperplate Gothic Bold"
@@ -46,6 +54,16 @@ def start_Window():
     mainView=Tk()
     mainView.configure(background='black')
     state=False
+
+    def hide_message():
+        time.sleep(3)
+        message_Label.config(text='')
+
+    def display_message(msg):
+        message_Label.config(text=msg)
+        t=threading.Thread(target=hide_message)
+        t.start()
+        
 
     def fullscreen(Event):
         global state
@@ -91,7 +109,9 @@ def start_Window():
             photo_weather = ImageTk.PhotoImage(image_weather)
             weather_icon_Label.config(image=photo_weather)
             weather_icon_Label.image=photo_weather
+   
     def updateNews():
+        global search,not_waiting
         image_news = Image.open("assets/Newspaper.png")
         image_news = image_news.resize((25, 25), Image.ANTIALIAS)
         image_news = image_news.convert('RGB')
@@ -103,17 +123,64 @@ def start_Window():
              "mtv-news","national-geographic","techradar"]
         contSource=0
         while(news):
-            if (contSource<len(sources)):
-                header=nw.getNews(contSource,sources)
-                event_Name_Label1.config(text=header[0])
-                event_Name_Label2.config(text=header[1])
-                event_Name_Label3.config(text=header[2])
-                contSource+=1
-                time.sleep(10)
+            if search=='':
+                if (contSource<len(sources)):
+                    header=nw.getNews(contSource,sources)
+                    event_Name_Label1.config(text=header[0])
+                    event_Name_Label2.config(text=header[1])
+                    event_Name_Label3.config(text=header[2])
+                    contSource+=1
+                    time.sleep(10)
+                else:
+                    contSource=0
+                    time.sleep(10)
             else:
-                contSource=0
-                time.sleep(10)
-		
+                display_message("Looking for " + search)
+                nw.searchNews(search)
+                search=''
+                not_waiting=True
+
+    def listen():
+        global listening, record,audio
+        # Record Audio
+        record = sr.Recognizer()
+        with sr.Microphone() as source:
+            print("Waiting for instructions:")
+            audio = record.listen(source)
+        while(listening):
+            # Speech recognition using Google Speech Recognition
+            try:
+                # for testing purposes, we're just using the default API key
+                # to use another API key, use `r.recognize_google(audio, key="GOOGLE_SPEECH_RECOGNITION_API_KEY")`
+                # instead of `r.recognize_google(audio)`
+                if not_waiting:
+                    voice=record.recognize_google(audio)
+                    if "mirror" in voice.lower():
+                        display_message("I'm listening")
+                        voice=record.recognize_google(audio)
+                        exec_command(voice)
+                    else:
+                        #listening=False
+                        print(voice)
+                        print("Ended")
+            except sr.UnknownValueError:
+                print("Google Speech Recognition could not understand audio")
+                #listening=False
+            except sr.RequestError as e:
+                print("Could not request results from Google Speech Recognition service; {0}".format(e))
+                #listening=False
+            time.sleep(5)
+    
+    def exec_command(command):
+        global record,audio,search,not_waiting
+        if command=="search news":
+            display_message("What should I look for?")
+            voice=record.recognize_google(audio)
+            search=voice
+            not_waiting=False
+
+
+
     #Frames
     topFrame = Frame(mainView, background = 'black')
     topFrame.pack(side = TOP, fill=BOTH, expand = YES)
@@ -128,7 +195,8 @@ def start_Window():
 
     #Message Label
     message_Label=Label(centerFrame, font=(font_type, large_text_size), fg="white", bg="black")
-    message_Label.pack(side=TOP, anchor=E)
+    message_Label.pack()
+    display_message("Hello!")
 
     #FullScreen Binding
     mainView.bind("<Up>", fullscreen)
@@ -191,9 +259,11 @@ def start_Window():
     t_date=threading.Thread(target=updateDate)
     t_news=threading.Thread(target=updateNews)
     t_weather=threading.Thread(target=updateWeather)
+    t_listen=threading.Thread(target=listen)
     t_date.start()
     t_news.start()
-    t_weather.start()
+    #t_weather.start()
+    t_listen.start()
 
     mainView.mainloop()
  	 
