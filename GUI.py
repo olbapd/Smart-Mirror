@@ -18,7 +18,7 @@ news=True
 #Font Size
 font_type= "Copperplate Gothic Bold"
 large_text_size=25
-xlarge_text_size=75
+xlarge_text_size=60
 small_text_size=15
 medium_text_size=20
 
@@ -58,6 +58,7 @@ def start_Window():
         state = False
         mainView.attributes("-fullscreen", False)
         return "break"
+
     def updateDate():
         global currentDate,currentDay,currentTimeInfo
         while (updates):
@@ -78,19 +79,19 @@ def start_Window():
             #forecast_Label.config(text="")
             temperature_Label.config(text="")
             location_Label.config(text="Cannot Pinpoint Location")
-            icon_Label.config(image=None)
+            #icon_Label.config(image=None)
         else:
-            loc_string=""+info[3]+","+info[4]
+            loc_string=""+info[3]+", "+info[4]
             currently_Label.config(text=info[0])
             #forecast_Label.config(text=info[0])
-            temperature_Label.config(text=info[1])
+            temperature_Label.config(text=""+info[1]+"°C")
             location_Label.config(text=loc_string)
-            image = Image.open(weather_icon[info[0]])
-            image = image.resize((100, 100), Image.ANTIALIAS)
-            image = image.convert('RGB')
-            photo = ImageTk.PhotoImage(image)
-            icon_Label.config(image=photo)
-
+            image_weather = Image.open(weather_icon[info[0]])
+            image_weather = image_weather.resize((100, 100), Image.ANTIALIAS)
+            image_weather = image_weather.convert('RGB')
+            photo_weather = ImageTk.PhotoImage(image_weather)
+            icon_Label.config(image=photo_weather)
+            
     def updateNews():
         image_news = Image.open("assets/Newspaper.png")
         image_news = image_news.resize((25, 25), Image.ANTIALIAS)
@@ -110,7 +111,6 @@ def start_Window():
                 event_Name_Label3.config(text=header[2])
                 contSource+=1
                 time.sleep(10)
-
             else:
                 contSource=0
                 time.sleep(10)
@@ -118,12 +118,18 @@ def start_Window():
     #Frames
     topFrame = Frame(mainView, background = 'black')
     topFrame.pack(side = TOP, fill=BOTH, expand = YES)
+    centerFrame = Frame(mainView, background = 'black')
+    centerFrame.pack(side = TOP, fill=BOTH, expand = YES)
     top_rigt_Frame=Frame(topFrame, background = 'black')
     top_rigt_Frame.pack(side = RIGHT, fill=BOTH, expand = YES)
     top_left_Frame=Frame(topFrame, background = 'black')
     top_left_Frame.pack(side = LEFT, fill=BOTH, expand = YES)
     bottomFrame = Frame(mainView, background = 'black')
     bottomFrame.pack(side = BOTTOM, fill=BOTH, expand = YES)
+
+    #Message Label
+    message_Label=Label(centerFrame, font=(font_type, large_text_size), fg="white", bg="black")
+    message_Label.pack(side=TOP, anchor=E)
 
     #FullScreen Binding
     mainView.bind("<Up>", fullscreen)
@@ -145,7 +151,7 @@ def start_Window():
     degree_Frame.pack(side=TOP, anchor=W)
     temperature_Label = Label(degree_Frame, font=(font_type, xlarge_text_size), fg="white", bg="black")
     temperature_Label.pack(side=LEFT, anchor=N)
-    icon_Label = Label(degree_Frame, bg="black", image='')
+    icon_Label = Label(degree_Frame, bg="black")
     icon_Label.pack(side=LEFT, anchor=N, padx=20)
     currently_Label = Label(top_left_Frame, font=(font_type, medium_text_size), fg="white", bg="black")
     currently_Label.pack(side=TOP, anchor=W)
