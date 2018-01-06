@@ -11,7 +11,7 @@ from PIL import Image, ImageTk
 updates=True
 
 #Font Size
-font_type= 'Copperplate Gothic Bold'
+font_type= "Copperplate Gothic Bold"
 large_text_size=14
 xlarge_text_size=20
 small_text_size=14
@@ -57,21 +57,20 @@ def start_Window():
         mainView.attributes("-fullscreen", False)
         return "break"
     def updateDate():
-    	while (updates):
-        	temp_date=datetime.now().strftime("%a %d %b %Y")
-        	if temp_date != currentDate:
-        		currentDate=temp_date
-        		currentDay=datetime.now().strftime("%A")	
-        		dayOWLbl.config(text=str(currentDay)) #Updates Day
-	        	date_Label.config(text=str(temp_date)) #Update Date
-	        
-	        currentTimeInfo=datetime.now().strftime("%H:%M %p")
-	        time_Label.config(text=str(currentTimeInfo)) #Updates Time
-	        print("Running")
-	        time.sleep(0.5)
+        global currentDate,currentDay,currentTimeInfo
+        while (updates):
+            temp_date=datetime.now().strftime("%a %d %b %Y")
+            if temp_date != currentDate:
+                currentDate=temp_date
+                currentDay=datetime.now().strftime("%A")
+                dayOWLbl.config(text=str(currentDay)) #Updates Day
+                date_Label.config(text=str(temp_date)) #Update Date
+            currentTimeInfo=datetime.now().strftime("%I :%M %p")
+            time_Label.config(text=str(currentTimeInfo)) #Updates Time
+            time.sleep(10)
 	
-	def updateWheather():
-		a=1
+    def updateWheather():
+        a=1
 	
     #Frames
     topFrame = Frame(mainView, background = 'black')
@@ -84,29 +83,29 @@ def start_Window():
     mainView.bind("<Escape>", end_fullscreen)
 
     #Time
-    time_Label = Label(topFrame, font_type=(font_type, large_text_size), fg="white", bg="black")
+    time_Label = Label(topFrame, font=(font_type, large_text_size), fg="white", bg="black")
     time_Label.pack(side=TOP, anchor=E)
     print(time_Label)
     #Day of Week
-    dayOWLbl = Label(topFrame, text=currentDay, font_type=(font_type, small_text_size), fg="white", bg="black")
+    dayOWLbl = Label(topFrame, text=currentDay, font=(font_type, small_text_size), fg="white", bg="black")
     dayOWLbl.pack(side=TOP, anchor=E)
 
     #Date
-    date_Label = Label(topFrame, text=currentDate, font_type=(font_type, small_text_size), fg="white", bg="black")
+    date_Label = Label(topFrame, text=currentDate, font=(font_type, small_text_size), fg="white", bg="black")
     date_Label.pack(side=TOP, anchor=E)
     
     #Weather
     degree_Frame = Frame(mainView, bg="black")
     degree_Frame.pack(side=TOP, anchor=W)
-    temperature_Label = Label(degreeFrm, font_type=(font_type, xlarge_text_size), fg="white", bg="black")
+    temperature_Label = Label(degree_Frame, font=(font_type, xlarge_text_size), fg="white", bg="black")
     temperature_Label.pack(side=LEFT, anchor=N)
-    icon_Label = Label(degreeFrm, bg="black")
+    icon_Label = Label(degree_Frame, bg="black")
     icon_Label.pack(side=LEFT, anchor=N, padx=20)
-    currently_Label = Label(mainView, font_type=(font_type, medium_text_size), fg="white", bg="black")
+    currently_Label = Label(mainView, font=(font_type, medium_text_size), fg="white", bg="black")
     currently_Label.pack(side=TOP, anchor=W)
-    forecast_Label = Label(mainView, font_type=(font_type, small_text_size), fg="white", bg="black")
+    forecast_Label = Label(mainView, font=(font_type, small_text_size), fg="white", bg="black")
     forecast_Label.pack(side=TOP, anchor=W)
-    locationLabel = Label(mainView, font_type=(font_type, small_text_size), fg="white", bg="black")
+    locationLabel = Label(mainView, font=(font_type, small_text_size), fg="white", bg="black")
     locationLabel.pack(side=TOP, anchor=W)
 
     #Insert weather imgae
@@ -118,7 +117,7 @@ def start_Window():
     icon_Label.pack(side=LEFT, anchor=N, padx=20)
 
     t=threading.Thread(target=updateDate)
-	t.start()
+    t.start()
 
     mainView.mainloop()
  
