@@ -1,4 +1,6 @@
 # Smart-Mirror
 
 #Installation Requests:
-	pipenv install requests
+	pip install requests
+#Installation PIL:
+	pip install Pillow
