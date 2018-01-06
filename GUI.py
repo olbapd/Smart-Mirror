@@ -53,6 +53,7 @@ def start_Window():
     global state
     mainView=Tk()
     mainView.configure(background='black')
+    mainView.attributes("-fullscreen", True) #Eliminar despues 
     state=False
 
     def hide_message():
@@ -179,8 +180,6 @@ def start_Window():
             search=voice
             not_waiting=False
 
-
-
     #Frames
     topFrame = Frame(mainView, background = 'black')
     topFrame.pack(side = TOP, fill=BOTH, expand = YES)
@@ -196,7 +195,7 @@ def start_Window():
     #Message Label
     message_Label=Label(centerFrame, font=(font_type, large_text_size), fg="white", bg="black")
     message_Label.pack()
-    display_message("Hello!")
+    display_message("Greetings Lord Marco of the Macintosh!")
 
     #FullScreen Binding
     mainView.bind("<Up>", fullscreen)
