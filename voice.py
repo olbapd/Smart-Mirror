@@ -7,7 +7,7 @@ import news as nw
 # Record Audio
 r = sr.Recognizer()
 with sr.Microphone() as source:
-    print("Say something!")
+    print("Search for news:")
     audio = r.listen(source)
  
 # Speech recognition using Google Speech Recognition
@@ -16,7 +16,7 @@ try:
     # to use another API key, use `r.recognize_google(audio, key="GOOGLE_SPEECH_RECOGNITION_API_KEY")`
     # instead of `r.recognize_google(audio)`
     voice=r.recognize_google(audio)
-    print("You said: " + voice)
+    print("Looking for " + voice)
     nw.searchNews(voice)
 except sr.UnknownValueError:
     print("Google Speech Recognition could not understand audio")
