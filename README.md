@@ -6,3 +6,7 @@
 	sudo easy_install pip
 #Installation PIL:
 	pip install Pillow
+#Install pyAudio
+	pip install SpeechRecognition
+	brew install portaudio //for Mac OSX
+	pip install pyaudio
