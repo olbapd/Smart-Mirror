@@ -1,6 +1,8 @@
 import requests
 import traceback
 import json
+
+
 lat=''
 lon=''
 def get_ip():
@@ -36,3 +38,4 @@ print("Temperature: "+wTemp)
 print("Wind Speed: "+wWindSpeed)
 print("Country: "+wCountry)
 print("City: "+wCity)
+
