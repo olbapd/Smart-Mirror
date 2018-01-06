@@ -8,12 +8,15 @@ import traceback
 import json
 from PIL import Image, ImageTk
 
+#SM-Imports
+import weather as wthr
+
 updates=True
 
 #Font Size
 font_type= "Copperplate Gothic Bold"
 large_text_size=14
-xlarge_text_size=20
+xlarge_text_size=75
 small_text_size=14
 medium_text_size=18
 
@@ -24,21 +27,18 @@ currentDay=datetime.now().strftime("%A")
 
 #Icons for wheather
 weather_icon = {
-    'clear-day': "assets/Sun.png", 
-    'wind': "assets/Wind.png",  
-    'cloudy': "assets/Cloud.png", 
-    'partly-cloudy-day': "assets/PartlySunny.png", 
-    'rain': "assets/Rain.png", 
+    'clear sky': "assets/Sun.png", 
+    'mist': "assets/Haze.png", 
     'snow': "assets/Snow.png", 
-    'snow-thin': "assets/Snow.png", 
-    'fog': "assets/Haze.png", 
-    'clear-night': "assets/Moon.png", 
-    'partly-cloudy-night': "assets/PartlyMoon.png", 
-    'thunderstorm': "assets/Storm.png", 
-    'tornado': "assests/Tornado.png",   
-    'hail': "assests/Hail.png" 
+    'thunderstorm':"assets/Storm.png", 
+    'rain':"assets/Rain.png",
+    'frew clouds': "assets/PartlySunny.png", 
+    'scattered clouds': "assets/Cloud.png", 
+    'broken clouds': "assets/Cloud.png", 
+    'shower rain':"assets/Rain.png",
+    'few clouds': "assets/Cloud.png"
 }
-
+	
 def start_Window():
     global state
     mainView=Tk()
@@ -59,29 +59,48 @@ def start_Window():
     def updateDate():
         global currentDate,currentDay,currentTimeInfo
         while (updates):
-            temp_date=datetime.now().strftime("%a %d %b %Y")
+            temp_date=datetime.now().strftime("%d %b %Y")
             if temp_date != currentDate:
+                updateNews()
                 currentDate=temp_date
                 currentDay=datetime.now().strftime("%A")
                 dayOWLbl.config(text=str(currentDay)) #Updates Day
                 date_Label.config(text=str(temp_date)) #Update Date
             currentTimeInfo=datetime.now().strftime("%I :%M %p")
             time_Label.config(text=str(currentTimeInfo)) #Updates Time
-            time.sleep(10)
+            time.sleep(5)
 	
     def updateWeather():
-        currently_Label.config(text="Rainy")
-        forecast_Label.config(text="Not Rainy")
-        temperature_Label.config(text="20 C")
-        location_Label.config(text="Cannot Pinpoint Location")
+        info=wthr.get_Data()
+        if info[0]==None:
+            currently_Label.config(text="")
+            forecast_Label.config(text="")
+            temperature_Label.config(text="")
+            location_Label.config(text="Cannot Pinpoint Location")
+        else:
+            loc_string=""+info[3]+","+info[4]
+            currently_Label.config(text=info[0])
+            #forecast_Label.config(text=info[0])
+            temperature_Label.config(text=info[1])
+            location_Label.config(text=loc_string)
 
-        image = Image.open(weather_icon['clear-day']) #Must change this
-        image = image.resize((100, 100), Image.ANTIALIAS)
+            image = Image.open(weather_icon[info[0]]) #Must change this
+            image = image.resize((100, 100), Image.ANTIALIAS)
+            image = image.convert('RGB')
+            photo = ImageTk.PhotoImage(image)
+            icon_Label.config(image=photo)
+
+    def updateNews():
+        image = Image.open("assets/Newspaper.png")
+        image = image.resize((25, 25), Image.ANTIALIAS)
         image = image.convert('RGB')
         photo = ImageTk.PhotoImage(image)
-        icon_Label.config(image=photo)
+        print("here")
 
-	
+        news_icon_Label1.config(image=photo)
+        news_icon_Label2.config(image=photo)
+        news_icon_Label3.config(image=photo)    
+		
     #Frames
     topFrame = Frame(mainView, background = 'black')
     topFrame.pack(side = TOP, fill=BOTH, expand = YES)
@@ -120,26 +139,39 @@ def start_Window():
     forecast_Label.pack(side=TOP, anchor=W)
     location_Label = Label(top_left_Frame, font=(font_type, small_text_size), fg="white", bg="black")
     location_Label.pack(side=TOP, anchor=W)
+
+    #News
+    bottom_left_Frame=Frame(bottomFrame,bg="black")
+    bottom_left_Frame.pack(side=LEFT, anchor=S, padx=100, pady=60)
+    news_Label = Label(bottom_left_Frame, text='News', font=('Helvetica', medium_text_size), fg="white", bg="black")
+    news_Label.pack(side=TOP, anchor=W)
+    headlinesContainer = Frame(bottom_left_Frame, bg="black")
+    headlinesContainer.pack(side=TOP)
+
+    news_icon_Label1=Label(bottom_left_Frame, bg='black', image='')
+    news_icon_Label1.pack(side=LEFT, anchor=W)
+    event_Name_Label1 = Label(bottom_left_Frame, text='Real Madrid parte al Barca', font=('Helvetica', small_text_size), fg="white", bg="black")
+    event_Name_Label1.pack(side=LEFT, anchor=W)
     
+    news_icon_Label2=Label(bottom_left_Frame, bg='black', image='')
+    news_icon_Label2.pack(side=LEFT, anchor=W)
+    event_Name_Label2 = Label(bottom_left_Frame, text='Messi se muere xq se quebro una unha', font=('Helvetica', small_text_size), fg="white", bg="black")
+    event_Name_Label2.pack(side=LEFT, anchor=W)
+    
+    news_icon_Label3=Label(bottom_left_Frame, bg='black', image='')
+    news_icon_Label3.pack(side=LEFT, anchor=W)
+    event_Name_Label3 = Label(bottom_left_Frame, text='Mac quebro por fraude.', font=('Helvetica', small_text_size), fg="white", bg="black")
+    event_Name_Label3.pack(side=LEFT, anchor=W)
+
+    updateNews()
     #Runs threads
     t_date=threading.Thread(target=updateDate)
     t_weather=threading.Thread(target=updateWeather)
     t_date.start()
     t_weather.start()
 
+    
     mainView.mainloop()
- 
-
-    '''    
-        # weather
-        self.weather = Weather(self.topFrame)
-        self.weather.pack(side=LEFT, anchor=N, padx=100, pady=60)
-        # news
-        self.news = News(self.bottomFrame)
-        self.news.pack(side=LEFT, anchor=S, padx=100, pady=60)'''
-        
-
-
-
+ 	 
 
 start_Window()
