@@ -144,21 +144,18 @@ def start_Window():
     def listen():
         global listening, record,audio
         # Record Audio
-        record = sr.Recognizer()
-        with sr.Microphone() as source:
-            print("Waiting for instructions:")
-            audio = record.listen(source)
+        
         while(listening):
             # Speech recognition using Google Speech Recognition
             try:
                 # for testing purposes, we're just using the default API key
                 # to use another API key, use `r.recognize_google(audio, key="GOOGLE_SPEECH_RECOGNITION_API_KEY")`
-                # instead of `r.recognize_google(audio)`
+                # instead of `r.recognize_google(audio)
                 if not_waiting:
-                    voice=record.recognize_google(audio)
+                    voice=detect_voice()
                     if "mirror" in voice.lower():
                         display_message("I'm listening")
-                        voice=record.recognize_google(audio)
+                        voice=detect_voice()
                         exec_command(voice)
                     else:
                         #listening=False
@@ -176,9 +173,17 @@ def start_Window():
         global record,audio,search,not_waiting
         if command=="search news":
             display_message("What should I look for?")
-            voice=record.recognize_google(audio)
-            search=voice
+            search=detect_voice()
             not_waiting=False
+
+    def detect_voice():
+        record = sr.Recognizer()
+        with sr.Microphone() as source:
+            print("Waiting for instructions:")
+            audio = record.listen(source)
+        voice=record.recognize_google(audio)
+        return voice
+        
 
     #Frames
     topFrame = Frame(mainView, background = 'black')
