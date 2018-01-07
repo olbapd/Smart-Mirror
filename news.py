@@ -26,20 +26,17 @@ def getNews(contSource,sources):
 def searchNews(keyword):
     url='https://newsapi.org/v2/everything?q='+keyword+'&apiKey=ce579b2e7ae441d0830cce3bc04fd534'
     contArticle=0
+    newsList=[]
     while (contArticle<3):
         nData = requests.get(url).json()
         nAuthor=nData['articles'][contArticle]['source']['name']
         nTitle=nData['articles'][contArticle]['title']
         nDescription=nData['articles'][contArticle]['description']
-        print ("News from: "+nAuthor)
-        print (nTitle)
-        print (nDescription)
-        print ("")
-
         contArticle+=1
+        newsList.append(nTitle)
     else:
-        print("-------------------------------------------------------")
-        time.sleep(5)
+        print(newsList)
+        return newsList
 
 
 

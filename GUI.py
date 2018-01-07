@@ -127,6 +127,7 @@ def start_Window():
             if search=='':
                 if (contSource<len(sources)):
                     header=nw.getNews(contSource,sources)
+                    news_Label.config(text="News")
                     event_Name_Label1.config(text=header[0])
                     event_Name_Label2.config(text=header[1])
                     event_Name_Label3.config(text=header[2])
@@ -137,8 +138,13 @@ def start_Window():
                     time.sleep(10)
             else:
                 display_message("Looking for " + search)
-                nw.searchNews(search)
+                result=nw.searchNews(search)
+                news_Label.config(text="Search Results")
+                event_Name_Label1.config(text=result[0])
+                event_Name_Label2.config(text=result[1])
+                event_Name_Label3.config(text=result[2])
                 search=''
+                time.sleep(5)
                 not_waiting=True
 
     def listen():
