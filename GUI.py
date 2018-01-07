@@ -53,7 +53,7 @@ def start_Window():
     global state
     mainView=Tk()
     mainView.configure(background='black')
-    mainView.attributes("-fullscreen", True) #Eliminar despues 
+    mainView.attributes("-fullscreen", True)
     state=False
 
     def hide_message():
@@ -261,7 +261,7 @@ def start_Window():
     t_listen=threading.Thread(target=listen)
     t_date.start()
     t_news.start()
-    #t_weather.start()
+    t_weather.start()
     t_listen.start()
 
     mainView.mainloop()
